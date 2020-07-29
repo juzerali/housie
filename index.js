@@ -14,11 +14,11 @@ class HousieGame {
     }
 
     draw() {
-        if(this._numbers.length == 0) throw "Error: Game is complete!!!"
+        if(this._numbers.length === 0) throw "Error: Game is complete!!!"
 
-        var picked = this._engine.pick(this._numbers);
+        const picked = this._engine.pick(this._numbers);
         this._numbers = this._numbers.filter(function (num) {
-            return num != picked;
+            return num !== picked;
         });
         this.drawn.push(picked);
         return picked;
@@ -179,6 +179,7 @@ class ChromeSpeaker {
     }
 
     speak(number) {
+        if(!number) return;
         number = number.toString();
         let msg = "";
         if(number.length < 2) {
