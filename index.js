@@ -8,8 +8,8 @@ class HousieGame {
 
         this._numbers = [];
 
-        for(var i =1 ; i <= 90; i++) {
-            if(!(i in this.drawn)) this._numbers.push(i);
+        for(var i = 1 ; i <= 90; i++) {
+            if(!this.drawn.includes(i)) this._numbers.push(i);
         }
     }
 
