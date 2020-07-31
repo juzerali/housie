@@ -9,6 +9,7 @@ class ChromeSpeaker {
   }
 
   speak(number) {
+      if(!number) return;
       number = number.toString();
       let msg = "";
       if(number.length < 2) {
