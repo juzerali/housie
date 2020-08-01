@@ -150,6 +150,7 @@ function createNewGame() {
 }
 
 function showCreateWidget() {
+    $(document).off("keyup");
     window.location.hash = "";
     document.getElementById("create-new-game-widget").className = "";
     document.getElementById("game-window").className = "hidden";
@@ -159,6 +160,11 @@ function showCreateWidget() {
 function showGameWindow() {
     document.getElementById("create-new-game-widget").className = "hidden"
     document.getElementById("game-window").className = ""
+    $(document).on("keyup", (e) => {
+       if(e.key == "D" || e.key == "d" || e.key == " ") {
+           window.draw();
+       }
+    });
 }
 
 function randomId() {
@@ -166,7 +172,7 @@ function randomId() {
 }
 
 window.speaker = function (number) {
-    if(!window.SpeechSynthesisUtterance) return new NoopSpeaker();
+    if(!window.SpeechSynthesisUtterance || window.APP.isMuted()) return new NoopSpeaker();
     return new ChromeSpeaker();
 }
 
@@ -202,3 +208,22 @@ class ChromeSpeaker {
 class NoopSpeaker {
     speak(number) {}
 }
+
+class App {
+    constructor() {
+        this.muted = false;
+    }
+
+    mute() {
+        this.muted = true
+    }
+    unmute() {
+        this.muted = false
+    }
+
+    isMuted() {
+        return this.muted;
+    }
+}
+
+window.APP = new App;
