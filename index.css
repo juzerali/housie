@@ -16,3 +16,21 @@ td, .number {
 .last-drawn {
     background-color: coral;
 }
+
+#volume-control.muted #muted-icon{
+    display: none;
+}
+
+#volume-control.muted #unmuted-icon{
+    display: inline-block;
+}
+
+#volume-control #muted-icon{
+    display: inline-block;
+}
+
+#volume-control #unmuted-icon{
+    display: none;
+}
+
+

@@ -54,7 +54,9 @@ class HousieGame {
 
 $(function () {
     var gameDB = new PouchDB("games")
+    var prefsDB = new PouchDB("prefs")
     window.gameDB = gameDB;
+    window.prefsDB = prefsDB;
     var hash = window.location.hash.substring(1);
     if (hash.length > 0) {
         window.load(hash);
@@ -70,6 +72,7 @@ $(function () {
         window.gameDB.destroy(() => window.location.reload());
     });
     $("#new-game-name").on("keyup", (e) => e.stopPropagation());
+    window.APP = new App;
 });
 
 window.draw = $.throttle(2000, true, function (nums = 1) {
@@ -229,6 +232,8 @@ function showGameWindow() {
             window.draw();
         } else if (e.key == "Backspace" || e.key == "n" || e.key == "u") {
             window.showCreateWidget();
+        } else if(e.key == "m") {
+            window.APP.toggleMute();
         }
     });
 }
@@ -282,16 +287,25 @@ class App {
     }
 
     mute() {
-        this.muted = true
+        this.muted = true;
+        window.speechSynthesis.cancel();
+        $("#volume-control").addClass("muted");
+        console.log("MUTED");
+
+        window.prefsDB
     }
 
     unmute() {
         this.muted = false
+        $("#volume-control").removeClass("muted");
+        console.log("UNMUTED");
+    }
+
+    toggleMute() {
+        this.muted ? this.unmute() : this.mute();
     }
 
     isMuted() {
         return this.muted;
     }
 }
-
-window.APP = new App;
