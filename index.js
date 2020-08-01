@@ -286,6 +286,7 @@ class App {
         var self = this;
         window.prefsDB.get("muted?").then((muted) => {
             self.muted = muted.value;
+            self.muted ? self.mute() : self.unmute();
         }).catch(() => {
             self.muted = false;
             window.prefsDB.put({
