@@ -38,8 +38,8 @@ class HousieGame {
     }
 
     lastDrawn() {
-        if(this.drawn.length == 0) return null;
-        return this.drawn[this.drawn.length-1];
+        if (this.drawn.length == 0) return null;
+        return this.drawn[this.drawn.length - 1];
     }
 
     toJSON() {
@@ -52,27 +52,28 @@ class HousieGame {
     }
 }
 
-$(function () {
-    var gameDB = new PouchDB("games")
-    var prefsDB = new PouchDB("prefs")
+$(async () => {
+    let gameDB = new PouchDB("games");
+    let prefsDB = new PouchDB("prefs");
     window.gameDB = gameDB;
     window.prefsDB = prefsDB;
-    var hash = window.location.hash.substring(1);
+    let hash = window.location.hash.substring(1);
     if (hash.length > 0) {
         window.load(hash);
     } else {
         showCreateWidget();
     }
 
-    $("#delete-all-games").on("click", (e) => {
+    $("#delete-all-games").on("click", async (e) => {
         e.preventDefault();
 
         if (!confirm("WARNING!!! \nAre you sure? This action is irreversible.")) return;
 
-        window.gameDB.destroy(() => window.location.reload());
+        await gameDB.destroy();
+        window.location.reload();
     });
     $("#new-game-name").on("keyup", (e) => e.stopPropagation());
-    window.APP = new App;
+    window.APP = window.app = new App();
 });
 
 window.draw = $.throttle(2000, true, function (nums = 1) {
@@ -120,7 +121,7 @@ function render(game) {
             .removeClass("drawn")
             .removeClass("last-drawn");
 
-        if(game.drawn.includes(num)) {
+        if (game.drawn.includes(num)) {
             $elem.addClass("drawn");
         }
     }
@@ -156,6 +157,7 @@ function createNewGame() {
 }
 
 function showCreateWidget() {
+    let gameDB = new PouchDB("games");
     $(document).off("keyup");
     $(document).on("keyup", (e) => {
         e.key === "/" && $("#new-game-name").focus();
@@ -196,25 +198,25 @@ function showCreateWidget() {
 
                 let deleteIcon = $(`<a href="#"><svg color="red" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/></svg></a>`)
                 deleteIcon.click(() => {
-                   gameDB.get(id).then(doc => {
-                       gameDB.remove(doc);
-                       let undo = $("<a href='#'>Undo ↩</a>");
-                       li.empty().append(undo);
-                       undo.click(() => {
-                          gameDB.put({
-                              _id: window.randomId(),
-                              name: doc.name,
-                              drawn: doc.drawn,
-                              createdAt: doc.createdAt
-                          }).then((doc) => {
-                              a
-                                  .attr("href", "#" + doc.id)
-                                  .off("click")
-                                  .on("click", () => window.load(doc.id))
-                              li.empty().append(wrapper)
-                          });
-                       });
-                   })
+                    gameDB.get(id).then(doc => {
+                        gameDB.remove(doc);
+                        let undo = $("<a href='#'>Undo ↩</a>");
+                        li.empty().append(undo);
+                        undo.click(() => {
+                            gameDB.put({
+                                _id: window.randomId(),
+                                name: doc.name,
+                                drawn: doc.drawn,
+                                createdAt: doc.createdAt
+                            }).then((doc) => {
+                                a
+                                    .attr("href", "#" + doc.id)
+                                    .off("click")
+                                    .on("click", () => window.load(doc.id))
+                                li.empty().append(wrapper)
+                            });
+                        });
+                    })
                 });
                 li.append(deleteIcon);
             });
@@ -232,7 +234,7 @@ function showGameWindow() {
             window.draw();
         } else if (e.key == "Backspace" || e.key == "n" || e.key == "u") {
             window.showCreateWidget();
-        } else if(e.key == "m") {
+        } else if (e.key == "m") {
             window.APP.toggleMute();
         }
     });
@@ -283,7 +285,7 @@ class NoopSpeaker {
 
 class App {
     constructor() {
-        var self = this;
+        let self = this;
         window.prefsDB.get("muted?").then((muted) => {
             self.muted = muted.value;
             self.muted ? self.mute() : self.unmute();
@@ -296,27 +298,25 @@ class App {
         });
     }
 
-    mute() {
+    async mute() {
         window.speechSynthesis && window.speechSynthesis.cancel();
         this.muted = true;
         $("#volume-control").addClass("muted");
         console.log("MUTED");
 
-        window.prefsDB.get("muted?").then((doc) => {
-            doc.value = true;
-            window.prefsDB.put(doc);
-        });
+        let mutePref = await window.prefsDB.get("muted?");
+        mutePref.value = true;
+        window.prefsDB.put(mutePref);
     }
 
-    unmute() {
+    async unmute() {
         this.muted = false
         $("#volume-control").removeClass("muted");
         console.log("UNMUTED");
 
-        window.prefsDB.get("muted?").then((doc) => {
-            doc.value = false;
-            window.prefsDB.put(doc);
-        });
+        let mutePref = await window.prefsDB.get("muted?");
+        mutePref.value = false;
+        window.prefsDB.put(mutePref);
     }
 
     toggleMute() {
