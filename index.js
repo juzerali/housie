@@ -111,20 +111,19 @@ function render(game) {
     var drawSequence = $("#draw-sequence");
     drawSequence.html("");
 
-    for (let i = 1; i <= 90; i++) {
-        let $elem = $(`#num-${i}`)
+    for (let num = 1; num <= 90; num++) {
+        let $elem = $(`#num-${num}`)
             .removeClass("drawn")
             .removeClass("last-drawn");
-        if(game.drawn.includes(i)) {
-            $elem.addClass("drawn")
+
+        if(game.drawn.includes(num)) {
+            $elem.addClass("drawn");
+
+            var historyElement = $("<span>");
+            historyElement.text(num + ", ");
+            drawSequence.append(historyElement);
         }
     }
-
-    game.drawn.forEach(function (num) {
-        var historyElement = $("<span>");
-        historyElement.text(num + ", ");
-        drawSequence.append(historyElement);
-    });
 
     $("#num-" + game.lastDrawn()).addClass("last-drawn")
     window.location.hash = game._id;
