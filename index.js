@@ -283,22 +283,39 @@ class NoopSpeaker {
 
 class App {
     constructor() {
-        this.muted = false;
+        var self = this;
+        window.prefsDB.get("muted?").then((muted) => {
+            self.muted = muted.value;
+        }).catch(() => {
+            self.muted = false;
+            window.prefsDB.put({
+                _id: "muted?",
+                value: false
+            });
+        });
     }
 
     mute() {
+        window.speechSynthesis && window.speechSynthesis.cancel();
         this.muted = true;
-        window.speechSynthesis.cancel();
         $("#volume-control").addClass("muted");
         console.log("MUTED");
 
-        window.prefsDB
+        window.prefsDB.get("muted?").then((doc) => {
+            doc.value = true;
+            window.prefsDB.put(doc);
+        });
     }
 
     unmute() {
         this.muted = false
         $("#volume-control").removeClass("muted");
         console.log("UNMUTED");
+
+        window.prefsDB.get("muted?").then((doc) => {
+            doc.value = false;
+            window.prefsDB.put(doc);
+        });
     }
 
     toggleMute() {
