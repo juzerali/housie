@@ -180,7 +180,10 @@ async function showCreateWidget() {
     games.forEach(await async function (game, i) {
         let shortKey = i + 1;
         let id = game._id;
-        let $li = $("<li>");
+        let $li = $("<a>", {
+            "class": "list-group-item list-group-item-action",
+            href: "#"
+        });
 
         game = new HousieGame(id, game.name, game.drawn, new Date(game.createdAt));
 
