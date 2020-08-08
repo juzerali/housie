@@ -33,4 +33,14 @@ td, .number {
     display: none;
 }
 
+.trash-icon {
+    color: palevioletred;
+    transform: skewY(0deg)
+}
+
+.trash-icon:hover {
+    color: red;
+    transform: scale(1.5) rotate(5deg);
+}
+
 
