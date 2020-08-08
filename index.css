@@ -60,3 +60,16 @@ td, .number {
 #delete-all-games:hover {
     animation: dhakdhak 2.5s infinite;
 }
+
+.previous-game-item {
+    opacity: 85%;
+}
+@keyframes pulldrawer {
+    from {}
+    to {transform: scale(1.05);}
+}
+.previous-game-item:hover {
+    animation: pulldrawer 0.5s;
+    animation-fill-mode: forwards;
+    opacity: 100%;
+}

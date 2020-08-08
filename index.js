@@ -181,7 +181,7 @@ async function showCreateWidget() {
         let shortKey = i + 1;
         let id = game._id;
         let $li = $("<a>", {
-            "class": "list-group-item list-group-item-action",
+            "class": "list-group-item list-group-item-action previous-game-item",
             href: "#" + id
         });
 
