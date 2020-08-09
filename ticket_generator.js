@@ -72,7 +72,17 @@ function generateTicket() {
     }
 }
 
-window.onload = generateTicket;
+$(() => {
+    generateTicket();
+
+    $(document).on("keyup", (e) => {
+        if(e.key === "t" || e.key === "n") {
+            generateTicket();
+        } else if(e.key === "i" || e.key === "m") {
+            generateTicketImage()
+        }
+    });
+})
 
 async function createTicketImage() {
     const ticketContainer = document.getElementById("ticket-table");
