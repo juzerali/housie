@@ -4,6 +4,9 @@ function generateTicket() {
         1: 'b',
         2: 'c',
     };
+
+    // Empty
+    document.getElementById("ticket-image").innerHTML = "";
     for (let i = 0; i <= 8; i++) {
         for (let j = 0; j < 3; j++) {
            document.getElementById(colmap[j] + i).innerText = "";
@@ -67,5 +70,39 @@ function generateTicket() {
             if (ticket[j][i]) document.getElementById(colmap[j] + i).innerText = ticket[j][i];
         }
     }
+}
+
+window.onload = generateTicket;
+
+async function createTicketImage() {
+    const ticketContainer = document.getElementById("ticket-table");
+    let dataUrl = await domtoimage.toPng(ticketContainer)
+    let img = new Image();
+    img.src = dataUrl;
+    return img
+}
+
+async function generateTicketImage() {
+    let img = await createTicketImage();
+    document.getElementById("ticket-image").innerHTML = "";
+    document.getElementById("ticket-image").appendChild(img);
+}
+
+async function copyTicketToClipboard() {
+    let img = await createTicketImage();
+
+    let canvas = document.createElement('canvas');
+    canvas.width = img.clientWidth;
+    canvas.height = img.clientHeight;
+    let context = canvas.getContext('2d');
+    context.drawImage(img, 0, 0);
+    document.body.appendChild(canvas);
+    canvas.toBlob(async function(blob) {
+        console.log(blob);
+        let item = new ClipboardItem({
+            'image/png': blob
+        });
+        await navigator.clipboard.write([item]);
+    }, 'image/png');
 }
 

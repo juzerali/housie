@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Tambola Number Drawer</title>
+    <title>Housie Ticket Generator</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -27,84 +27,69 @@
             src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 
     <script type="text/javascript">
-        window.onload = generateTicket;
 
-        async function createTicketImage() {
-            const ticketContainer = document.getElementById("ticket-table");
-            let dataUrl = await domtoimage.toPng(ticketContainer)
-            let img = new Image();
-            img.src = dataUrl;
-            return img
-        }
-        
-        async function generateTicketImage() {
-            let img = await createTicketImage();
-            document.body.appendChild(img);
-        }
-
-        async function copyTicketToClipboard() {
-            let img = await createTicketImage();
-
-            let canvas = document.createElement('canvas');
-            canvas.width = img.clientWidth;
-            canvas.height = img.clientHeight;
-            let context = canvas.getContext('2d');
-            context.drawImage(img, 0, 0);
-            document.body.appendChild(canvas);
-            canvas.toBlob(async function(blob) {
-                console.log(blob);
-                let item = new ClipboardItem({
-                    'image/png': blob
-                });
-                await navigator.clipboard.write([item]);
-            }, 'image/png');
-        }
     </script>
 </head>
 <body>
 
 </body>
 <div class="container" id="ticket-container">
-    <div class="col-6">
-        <table class="table table-bordered" id="ticket-table">
-            <tr>
-                <td id="a0"></td>
-                <td id="a1"></td>
-                <td id="a2"></td>
-                <td id="a3"></td>
-                <td id="a4"></td>
-                <td id="a5"></td>
-                <td id="a6"></td>
-                <td id="a7"></td>
-                <td id="a8"></td>
-            </tr>
-            <tr>
-                <td id="b0"></td>
-                <td id="b1"></td>
-                <td id="b2"></td>
-                <td id="b3"></td>
-                <td id="b4"></td>
-                <td id="b5"></td>
-                <td id="b6"></td>
-                <td id="b7"></td>
-                <td id="b8"></td>
-            </tr>
-            <tr>
-                <td id="c0"></td>
-                <td id="c1"></td>
-                <td id="c2"></td>
-                <td id="c3"></td>
-                <td id="c4"></td>
-                <td id="c5"></td>
-                <td id="c6"></td>
-                <td id="c7"></td>
-                <td id="c8"></td>
-            </tr>
-        </table>
+    <br><br><br>
+    <div class="row">
+        <a class="btn btn-success" onclick="generateTicket()">New Ticket</a>
     </div>
+    <br>
+    <div class="row">
+        <div class="col-6">
+            <table class="table table-bordered" id="ticket-table">
+                <tr>
+                    <td id="a0"></td>
+                    <td id="a1"></td>
+                    <td id="a2"></td>
+                    <td id="a3"></td>
+                    <td id="a4"></td>
+                    <td id="a5"></td>
+                    <td id="a6"></td>
+                    <td id="a7"></td>
+                    <td id="a8"></td>
+                </tr>
+                <tr>
+                    <td id="b0"></td>
+                    <td id="b1"></td>
+                    <td id="b2"></td>
+                    <td id="b3"></td>
+                    <td id="b4"></td>
+                    <td id="b5"></td>
+                    <td id="b6"></td>
+                    <td id="b7"></td>
+                    <td id="b8"></td>
+                </tr>
+                <tr>
+                    <td id="c0"></td>
+                    <td id="c1"></td>
+                    <td id="c2"></td>
+                    <td id="c3"></td>
+                    <td id="c4"></td>
+                    <td id="c5"></td>
+                    <td id="c6"></td>
+                    <td id="c7"></td>
+                    <td id="c8"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <a class="btn btn-primary" onclick="generateTicketImage()">Generate Image</a>
+        <br>
+    </div>
+    <div class="row hidden">
+        <!-- <a class="btn btn-success" onclick="copyTicketToClipboard()">Copy ticket to clipboard</a> -->
+        <br>
+    </div>
+
+    <div id="ticket-image"></div>
 </div>
 
-<a class="btn btn-success" onclick="copyTicketToClipboard()">Copy ticket to clipboard</a>
-<a class="btn btn-success" onclick="generateTicketImage()">Generate Image</a>
-<a class="btn btn-success" onclick="downloadTicket()">Download</a>
+
 </html>
