@@ -162,6 +162,7 @@ async function showCreateWidget() {
     $(document).off("keyup");
     $(document).on("keyup", (e) => {
         e.key === "/" && $("#new-game-name").focus();
+        e.key === "t" && window.open("ticket-generator.html");
     });
     window.location.hash = "";
     $("#create-new-game-widget").removeClass("hidden");
