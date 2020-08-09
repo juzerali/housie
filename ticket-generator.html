@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Tambola Number Drawer</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="ticket-generator.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/random-js/1.0.8/random.min.js"
+            integrity="sha512-C/21kASTZDv173aY5ERBPWuV9JVne9nhII/ZA7NIGhuPVCtGK5WnD6wzQ7dlQajXvu3003cojqouByxh+Fh3kg=="
+            crossorigin="anonymous"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.10.2/underscore-min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="ticket_generator.js"></script>
+
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+
+    <script type="text/javascript">
+        window.onload = generateTicket;
+
+        async function createTicketImage() {
+            const ticketContainer = document.getElementById("ticket-table");
+            let dataUrl = await domtoimage.toPng(ticketContainer)
+            let img = new Image();
+            img.src = dataUrl;
+            return img
+        }
+        
+        async function generateTicketImage() {
+            let img = await createTicketImage();
+            document.body.appendChild(img);
+        }
+
+        async function copyTicketToClipboard() {
+            let img = await createTicketImage();
+
+            let canvas = document.createElement('canvas');
+            canvas.width = img.clientWidth;
+            canvas.height = img.clientHeight;
+            let context = canvas.getContext('2d');
+            context.drawImage(img, 0, 0);
+            document.body.appendChild(canvas);
+            canvas.toBlob(async function(blob) {
+                console.log(blob);
+                let item = new ClipboardItem({
+                    'image/png': blob
+                });
+                await navigator.clipboard.write([item]);
+            }, 'image/png');
+        }
+    </script>
+</head>
+<body>
+
+</body>
+<div class="container" id="ticket-container">
+    <div class="col-6">
+        <table class="table table-bordered" id="ticket-table">
+            <tr>
+                <td id="a0"></td>
+                <td id="a1"></td>
+                <td id="a2"></td>
+                <td id="a3"></td>
+                <td id="a4"></td>
+                <td id="a5"></td>
+                <td id="a6"></td>
+                <td id="a7"></td>
+                <td id="a8"></td>
+            </tr>
+            <tr>
+                <td id="b0"></td>
+                <td id="b1"></td>
+                <td id="b2"></td>
+                <td id="b3"></td>
+                <td id="b4"></td>
+                <td id="b5"></td>
+                <td id="b6"></td>
+                <td id="b7"></td>
+                <td id="b8"></td>
+            </tr>
+            <tr>
+                <td id="c0"></td>
+                <td id="c1"></td>
+                <td id="c2"></td>
+                <td id="c3"></td>
+                <td id="c4"></td>
+                <td id="c5"></td>
+                <td id="c6"></td>
+                <td id="c7"></td>
+                <td id="c8"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<a class="btn btn-success" onclick="copyTicketToClipboard()">Copy ticket to clipboard</a>
+<a class="btn btn-success" onclick="generateTicketImage()">Generate Image</a>
+<a class="btn btn-success" onclick="downloadTicket()">Download</a>
+</html>
