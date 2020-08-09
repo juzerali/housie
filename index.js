@@ -135,7 +135,8 @@ function render(game = window.GAME) {
         drawSequence.append(historyElement);
     });
 
-    $("#num-" + game.lastDrawn()).addClass("last-drawn")
+    $("#num-" + game.lastDrawn()).addClass("last-drawn");
+    $("#last-number-display").text(game.lastDrawn());
     window.location.hash = game._id;
 }
 
